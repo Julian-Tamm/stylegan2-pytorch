@@ -120,6 +120,9 @@ if __name__ == "__main__":
         help="allow to use distinct latent codes to each layers",
     )
     parser.add_argument(
+        "--out", type=str, default="", help="path to the output file"
+    )
+    parser.add_argument(
         "files", metavar="FILES", nargs="+", help="path to image files to be projected"
     )
 
@@ -226,7 +229,9 @@ if __name__ == "__main__":
     img_gen, _ = g_ema([latent_path[-1]], input_is_latent=True, noise=noises)
 
     filename = os.path.splitext(os.path.basename(args.files[0]))[0] + ".pt"
-
+    if args.out != "" :
+        filename = args.out
+    
     img_ar = make_image(img_gen)
 
     result_file = {}
@@ -244,5 +249,5 @@ if __name__ == "__main__":
         img_name = os.path.splitext(os.path.basename(input_name))[0] + "-project.png"
         pil_img = Image.fromarray(img_ar[i])
         pil_img.save(img_name)
-
+    
     torch.save(result_file, filename)
